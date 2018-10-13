@@ -3,6 +3,12 @@ palette_names = {'gbd_super_regions': ['#D32B47', "#22973D", "#FCA048", "#1ABAB5
 
 
 def ihme_palettes(palette_name):
+    """
+    Takes a given string and returns the associated IHME color palette.
+
+    :param palette_name: (string) the name of the desired IHME color palette.
+    :return palette_names: (list) a list of hex values that correspond to the given palette name.
+    """
     try:
         return palette_names[palette_name.lower()]
     except KeyError:

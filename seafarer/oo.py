@@ -1,13 +1,11 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# TODO - Make a map for taking user input (case-insensitive) and returning a relevant seaborn plot.
-
 
 class CategoricalPlot(object):
     """
+    # TODO abstract again for all types of plots?
     """
-    #TODO abstract again for all types of plots?
 
     def __init__(self):
         self.f, self.ax = plt.subplots()
@@ -43,7 +41,6 @@ class Histogram(CategoricalPlot):
 
     def __init__(self):
         CategoricalPlot.__init__(self)
-        # TODO - how to decide whether Seaborn or Matplotlib?
 
     def plot(self, df, categorical_column, title, hue=None, rotation=0):
         self.ax = sns.countplot(x=categorical_column, data=df, hue=hue, dodge=True,
