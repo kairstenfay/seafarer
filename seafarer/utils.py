@@ -1,8 +1,24 @@
 from seafarer.oo import Histogram
 from seafarer.colors import ihme_palettes
+import matplotlib.pyplot as plt
 
 
-def plot(plot_type, df, x, y=None, title=None, rotation=0, dropna=False, custom_palette=None):
+# Static methods
+def sort(df, categorical_column, sort_by=None, ascending=True):
+    if sort_by:
+        df = df.sort_values(sort_by, acending=ascending)
+    else:
+        df = df.sort_values(categorical_column, ascending=ascending)
+    return df
+
+
+def _plt_funcs():
+    plt.show()
+    plt.xlabel("group")
+
+
+def make_plot(plot_type, df, x, y=None, title=None, rotation=0, dropna=False, custom_palette=None):
+
     # Drop NaNs
     if dropna:
         for column in [x, y]:
@@ -24,10 +40,10 @@ def plot(plot_type, df, x, y=None, title=None, rotation=0, dropna=False, custom_
             raise TypeError("custom_palette must be a string or a list")
 
         if type(custom_palette) is str:
-            plot_object.color_palette(ihme_palettes(custom_palette))
+            plot_object.color_palette = ihme_palettes(custom_palette)
 
         elif type(custom_palette) is list:
-            plot_object.color_palette(custom_palette)
+            plot_object.color_palette = custom_palette
 
     # Plot
     plot_object.plot(df=df, categorical_column=x, title=title, rotation=rotation)
@@ -35,5 +51,5 @@ def plot(plot_type, df, x, y=None, title=None, rotation=0, dropna=False, custom_
 
 
 if __name__ == '__main__':
-    plot("histogram", df=df, x='Age', title="Title", rotation=45,
+    make_plot("histogram", df=df, x='Age', title="Title", rotation=45,
          dropna=True)
