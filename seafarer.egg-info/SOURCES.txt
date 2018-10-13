@@ -1,0 +1,7 @@
+README.md
+setup.py
+seafarer/__init__.py
+seafarer.egg-info/PKG-INFO
+seafarer.egg-info/SOURCES.txt
+seafarer.egg-info/dependency_links.txt
+seafarer.egg-info/top_level.txt
