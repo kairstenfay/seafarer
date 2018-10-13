@@ -24,10 +24,10 @@ def plot(plot_type, df, x, y=None, title=None, rotation=0, dropna=False, custom_
             raise TypeError("custom_palette must be a string or a list")
 
         if type(custom_palette) is str:
-            plot_object.set_color_palette(ihme_palettes(custom_palette))
+            plot_object.color_palette(ihme_palettes(custom_palette))
 
         elif type(custom_palette) is list:
-            plot_object.set_color_palette(custom_palette)
+            plot_object.color_palette(custom_palette)
 
     # Plot
     plot_object.plot(df=df, categorical_column=x, title=title, rotation=rotation)

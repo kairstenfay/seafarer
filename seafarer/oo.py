@@ -21,33 +21,32 @@ class CategoricalPlot(object):
     """
     """
 
-    def __init__(self):
+    def __init__(self, color_palette=sns.color_palette("Set2"), legend_position="upper right"):
         self.f, self.ax = plt.subplots()
-        self._colors = sns.color_palette("Set2")
-        self._legend_position = "upper right"
+        self._color_palette = color_palette
+        self._legend_position = legend_position
 
-    @resize.setter
     def resize(self, width, height):
         self.f.set_size_inches(width, height)
 
     def _validate_dtypes(self):
         pass
 
-    @
-    def _set_color_palette(self, custom_palette):
-        self._colors = custom_palette
+    @property
+    def colors(self):
+        return self._color_palette
 
-    def set_color_palette(self, custom_palette):
-        self._set_color_palette(custom_palette)
+    @colors.setter
+    def colors(self, custom_palette):
+        self._color_palette = custom_palette
 
-    def get_color_palette(self):
-        return self._colors
+    @property
+    def legend_position(self):
+        return self._legend_position
 
-    def _move_legend(self, legend_position):
-        self._legend_position = legend_position
-
+    @legend_position.setter
     def legend_position(self, legend_position):
-        self._move_legend(legend_position)
+        self._legend_position = legend_position
 
 
 class Histogram(CategoricalPlot):
@@ -60,7 +59,7 @@ class Histogram(CategoricalPlot):
 
     def plot(self, df, categorical_column, title, hue=None, rotation=0):
         self.ax = sns.countplot(x=categorical_column, data=df, hue=hue, dodge=True,
-                                palette=self.get_color_palette())
+                                palette=self.colors)
         self.ax.set_title(title)
         self.ax.set_xticklabels(labels=df[categorical_column].unique(),
                                 rotation=rotation)
