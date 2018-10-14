@@ -6,10 +6,10 @@ class BasePlot(object):
     """
     """
 
-    def __init__(self, width=8, height=6):
+    def __init__(self):
         self.f, self.ax = plt.subplots()
         # self.f.set_size_inches(width, height)
-        self._color_palette = sns.color_palette("Set2"),
+        self._color_palette = sns.color_palette("Set2") # TODO: refactor so not hard-coded in two places
         # self._legend_position = "upper right"
 
     # def resize(self, width, height):
@@ -74,9 +74,8 @@ class SwarmBoxPlot(BasePlot):
         sns.despine(bottom=True)
 
         # Make box pots
-        self.ax = sns.boxplot(data=df, x=x, y=y,
-                              linewidth=8, fliersize=0, width=.7, hue=hue,
-                              palette=self.color_palette)
+        self.ax = sns.boxplot(data=df, x=x, y=y, linewidth=8, fliersize=0, width=.7,
+                              hue=hue, palette=self.color_palette)
 
         for patch in self.ax.artists:
             r, g, b, a = patch.get_facecolor()
@@ -109,5 +108,11 @@ class ScatterPlot(BasePlot):
         BasePlot.__init__(self)
 
     def plot(self, df, x, y, hue=None):
-        self.ax = sns.scatterplot(data=df, x=x, y=y, marker='o', hue=hue,
-                                  alpha=0.75, palette=self.color_palette)
+
+        if hue:
+            unique_hues = len(df[hue].unique())
+        else:
+            unique_hues = 1
+
+        self.ax = sns.scatterplot(data=df, x=x, y=y, marker='o', hue=hue, alpha=0.75,
+                                  palette=self.color_palette[0:unique_hues])
