@@ -1,9 +1,13 @@
-from seafarer.oo import Histogram
+from seafarer.models import Histogram, SwarmBoxPlot, ViolinPlot, ScatterPlot
 from seafarer.colors import ihme_palettes
 import matplotlib.pyplot as plt
+import re
 
-plot_types = {'histogram': Histogram(),
-              'countplot': Histogram()
+plot_types = {
+              'histogram': Histogram(),
+              'swarmboxplot': SwarmBoxPlot(),
+              'violinplot': ViolinPlot(),
+              'scatterplot': ScatterPlot()
               }
 
 
@@ -37,8 +41,8 @@ def save_plot(file_path):
     plt.savefig(file_path, bbox_inches="tight")
 
 
-def make_plot(plot_type, df, x, y=None, title=None, rotation=0, dropna=False,
-              custom_palette=None, xlabel=None, ylabel=None):
+def make_plot(plot_type, df, x, dropna=False, custom_palette=None, hue=None,
+              legend_position="upper right", width=11.5, height=8.5, **yarg):
     """
     Plots a figure of the given plot type using the given DataFrame.
 
@@ -49,36 +53,43 @@ def make_plot(plot_type, df, x, y=None, title=None, rotation=0, dropna=False,
               KeyError if the given column does not exist in the DataFrame.
     :param y: (string, optional) describes which column on the DataFrame to use as the y-axis.
               Raises a KeyError if the given column does not exist in the DataFrame.
-    :param title: (string, optional) the title of the plot
-    :param rotation: (int, optional) the degree to which the x-axis labels should be rotated.
     :param dropna: (bool, optional) if True, removes NaNs from the x-axis and y-axis.
     :param custom_palette: (list or strings, optional)
-    :param xlabel: (string, optional) the name for the x-axis label
-    :param ylabel: (string, optional) the name for the y=axis label
+    :param hue:
+    :param legend_position:
+    :param width:
+    :param height:
+    :return plot_object: #TODO
     """
+    plt.subplots(figsize=(width, height))
 
     # Validate column names
     if x not in df.columns:
         raise KeyError("The given column \"" + x + "\" is not present in the given DataFrame.")
-    if y:
-        if y not in df.columns:
-            raise KeyError("The given column \"" + y + "\" is not present in the given DataFrame.")
+    for y in yarg:
+        if yarg[y] not in df.columns:
+            raise KeyError("The given column \"" + yarg[y] + "\" is not present in the given DataFrame.")
 
     # Choose plot type
     try:
-        plot_object = plot_types[plot_type.lower()]
+        plot_object = plot_types[re.sub('[ -_]', '', plot_type.lower())]
 
-    except ValueError:
+    except KeyError:
         print("The " + plot_type + " plot is not yet implemented.\n" +
               "Please choose from the following list: \n")
         for key in plot_types.keys():
             print("\t- " + key)
 
+    # Optionally resize
+    # if width and height:
+    #     plot_object.resize(width, height)
+
     # Optionally drop NaNs
     if dropna:
-        for column in [x, y]:
-            if column:
-                df = df[(df[column].notnull())]
+        for y in yarg:
+            for column in [x, yarg[y]]:
+                if column:
+                    df = df[(df[yarg[y]].notnull())]
 
     # Assign custom palette
     if custom_palette:
@@ -92,8 +103,23 @@ def make_plot(plot_type, df, x, y=None, title=None, rotation=0, dropna=False,
             plot_object.color_palette = custom_palette
 
     # Plot
-    plot_object.plot(df=df, categorical_column=x, title=title, rotation=rotation)
+    for y in yarg:
+        plot_object.plot(df=df, x=x, y=yarg[y], hue=hue)
 
+    # Position legend
+    if hue:
+        plt.legend(loc=legend_position)
+
+    return plot_object
+
+
+def edit_labels(xlabel=None, ylabel=None):
+    """
+
+    :param xlabel: (string, optional) the name for the x-axis label
+    :param ylabel: (string, optional) the name for the y=axis label
+    """
+    # Add title, labels
     if xlabel:
         plt.xlabel(xlabel)
     if ylabel:
@@ -103,5 +129,8 @@ def make_plot(plot_type, df, x, y=None, title=None, rotation=0, dropna=False,
 if __name__ == '__main__':
 
     # Example run
-    make_plot("histogram", df=df, x='Age', title="Title", rotation=45,
-              dropna=True)
+    plot = make_plot("histogram", df=df, x='Age', dropna=True)
+    plot.title("Title!")
+    plot.xticklabels(df=df, x='Age', rotation=45)
+
+    edit_labels(xlabel=None, ylabel=None)

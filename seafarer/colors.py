@@ -1,4 +1,7 @@
-palette_names = {'gbd_super_regions': ['#D32B47', "#22973D", "#FCA048", "#1ABAB5", "#CD4AA2", "#BEEA6B", "#005E5B"]}
+palette_names = {
+                'gbd_super_regions': ['#D32B47', "#22973D", "#FCA048", "#1ABAB5", "#CD4AA2", "#BEEA6B", "#005E5B"],
+                'seq_ihme-green-1': ['#27472F', '#176E2D', '#22973D', '#BEEA6B', '#E2F6A7']
+                }
 # TODO - refactor into config file or central location shared b/w python and r
 
 
